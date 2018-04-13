@@ -14,20 +14,20 @@ import MenuItem from 'material-ui/MenuItem';
 import apiService from '../../lib/apiService/apiService';
 
 const iconStyles = {
-    marginRight: 50,
+	marginRight: 50,
 };
 
 const textStyles = {
-    position : 'initial',
-    marginLeft: '1em',
-    height: '40px',
+	position : 'initial',
+	marginLeft: '1em',
+	height: '40px',
 }
 const textStylesSelect = {
-    position : 'initial',
-    marginLeft: '1em',
-    height: '40px',
-    lineHeight: '55px',
-    overflow:'inherit'
+	position : 'initial',
+	marginLeft: '1em',
+	height: '40px',
+	lineHeight: '55px',
+	overflow:'inherit'
 }
 class ModalFormUser extends Component {
     constructor(props) {
