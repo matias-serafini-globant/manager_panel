@@ -36,6 +36,7 @@ class ModalFormUser extends Component {
 				
 				this.state = {
 						open: true,
+						edit:false,
 						select: 1,
 						user: {...this.props.user} || null
 				};
@@ -50,18 +51,15 @@ class ModalFormUser extends Component {
 				this.props.showModal(this.state.open)
 		}
 		
-		handleChange = (e,NewVal) => {
-			debugger
-			Object.keys(this.state.user).map(i=>{
-				i[e.target.name] = e.target.value 
-				this.setState({user:i})
-			})
-//			this.setState({user:{[e.target.name] : e.target.value} })
-			debugger
+		handleChange = (e) => {
+			let user = Object.assign({}, this.state.user); 
+			user[e.target.name] = e.target.value;   
+			this.setState({user,edit:true});
 		}
 
 		handleCreate(event) {
-			debugger
+
+				var method = '';
 				const userData = {
 						name: event.target.name.value,
 						surname: event.target.surname.value,
@@ -77,15 +75,31 @@ class ModalFormUser extends Component {
 						rol_id: this.state.select
 				}
 
-				apiService('POST', '/user', userData).then((res) => {
-						if (res.data) {
-								res.data.id = res.data.userId
-								this.props.userData(res.data);
-								}
-						})
-						.catch(function (reason) {
-								console.error(reason);
-						});
+				if(this.state.edit === true){
+					apiService('PUT', '/user/id?id='+this.state.user.id, userData).then((res) => {
+			
+							if (res.data) {
+									res.data.id = res.data.userId
+									this.props.userData(res.data);
+									}
+							})
+							.catch(function (reason) {
+									console.error(reason);
+							});
+				}else{
+					apiService('POST', '/user', userData).then((res) => {
+			
+							if (res.data) {
+									res.data.id = res.data.userId
+									this.props.userData(res.data);
+									}
+							})
+							.catch(function (reason) {
+									console.error(reason);
+							});
+				}
+
+
 		}
 
 		handleSelect = (event, index, select) => this.setState({select});
