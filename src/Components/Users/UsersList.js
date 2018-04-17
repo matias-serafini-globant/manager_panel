@@ -209,21 +209,20 @@ class UserList extends Component {
   }
 
   handlePersonClick(id) {
-    if(id){
+    if(Number.isInteger(id)){
       apiService('GET','/user/id?id='+id)
         .then((res) => {
             if(res.data){
-                this.setState({user:res.data})
+                this.setState({user:res.data[0],showModal:!this.state.showModal})
             }
         })
         .catch(function (reason) {
             console.error(reason);
         });
     }else{
-      this.setState({user:null})
+      this.setState({user:null,showModal:!this.state.showModal})
     }
     
-    this.setState({showModal:!this.state.showModal})
   }
   handleInfoClick() {
     console.log('handleInfoClick');
@@ -232,15 +231,14 @@ class UserList extends Component {
   handleUsers(){
     apiService('GET','/user/all')
       .then((succes) => {
-        debugger
-        for (let i = 0; i < succes.data.length; i++) {
+        succes.data.map(i =>{
           
-          succes.data[i].action = [<IconButton
+          i.action = [<IconButton
             iconClassName="material-icons"
             tooltipPosition="top-center"
             tooltip="Edit"
-            key={succes.data[i].id}
-            onClick={() => this.handlePersonClick(succes.data[i].id)}
+            key={i.id}
+            onClick={() => this.handlePersonClick(i.id)}
           >
             mode_edit
           </IconButton>,<IconButton
@@ -251,8 +249,7 @@ class UserList extends Component {
           >
             delete
           </IconButton>]
-        
-        }
+        })
 
         
         this.setState({users:succes.data})
