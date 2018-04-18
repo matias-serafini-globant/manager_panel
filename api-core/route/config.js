@@ -23,7 +23,7 @@ module.exports = {
         'bearer': true
     },
     '/user/id': {
-        'method': ['GET','PUT'],
+        'method': ['GET','PUT','DELETE'],
         'bearer': true
     },
     '/user/all': {

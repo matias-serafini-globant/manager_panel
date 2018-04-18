@@ -30,9 +30,9 @@ module.exports = {
 		FROM
 		    user
 		WHERE
-		    email = :email`
+		    email = :email`,
 
 	//"insertUserPlugin":"INSERT INTO user_plugin (user_id, plugin_id) VALUES ?",
 
-	//"deleteUserPlugin":"DELETE FROM user_plugin WHERE user_id = ?"
+	"deleteUser":"DELETE FROM user WHERE id = ?"
 };

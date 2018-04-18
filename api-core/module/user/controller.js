@@ -241,6 +241,14 @@ var controllerUser = new BaseController({
             callback(null, result[0].password);
         });
     },
+    daleteUser: function (id, callback) {
+        this.executeQuery(queries.deleteUser, { id: id }, function (err, result) {
+            if (_.isEmpty(result) || _.isEmpty(result[0].password)) {
+                return callback("server");
+            }
+            callback(null, result[0].password);
+        });
+    },
     /**
      * controller method for update userPassword
      *

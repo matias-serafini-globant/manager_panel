@@ -197,4 +197,21 @@ router.put("/id", function (req, res, next) {
     }
 });
 
+router.delete("/id", function (req, res, next) {
+    if (req.session.rol_id !== 1) {
+        //return res.sender(new MessageHandler("permission"), next);
+    }
+
+    var id = req.query.id;
+
+    if (!_.isEmpty(id)) {
+        userController.daleteUser(id, function (err, data) {
+            if (err || _.isEmpty(data)) {
+                return res.sender(new MessageHandler(err), next);
+            }
+            res.sender(new MessageHandler(data, true), next);
+        });
+    }
+});
+
 module.exports = router;
