@@ -15,8 +15,8 @@ import FontIcon from 'material-ui/FontIcon';
 
 import apiService from '../../lib/apiService/apiService';
 
-
 import ModalFormUser from './ModalFormUser'
+import Alert from '../Alert.js'
 
 const styles = {
   
@@ -135,15 +135,19 @@ class UserList extends Component {
     this.handlePersonClick = this.handlePersonClick.bind(this);
     this.handleInfoClick = this.handleInfoClick.bind(this);
     this.addUser = this.addUser.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
     this.handleUsers();
 
     this.state = {
       data: dataTable,
       page: 1,
       showModal:false,
+      showAlert:false,
       totalUser:0,
+      deleteId:null,
       user:null
-    };   }
+    };   
+  }
 
   handleSortOrderChange(key, order) {
     console.log('key:' + key + ' order: ' + order);
@@ -187,8 +191,23 @@ class UserList extends Component {
     
   }
 
-
-  addUser(data){
+  addUser(data){   
+    data.action = [<IconButton
+      iconClassName="material-icons"
+      tooltipPosition="top-center"
+      tooltip="Edit"
+      key={data.id}
+      onClick={() => this.handlePersonClick(data.id)}
+    >
+      mode_edit
+    </IconButton>,<IconButton
+      iconClassName="material-icons"
+      tooltipPosition="top-center"
+      tooltip="Delete"
+      onClick={()=>this.handleAlert(data.id)}
+    >
+      delete
+    </IconButton>]
     let pos = dataTable[0].length -1
 
     if (dataTable[0][pos].length < 10){
@@ -224,6 +243,25 @@ class UserList extends Component {
     }
     
   }
+  handleDelete(flag){
+    if(flag === true){
+      apiService('DELETE','/user/id?id='+this.state.deleteId)
+      .then((res)=>{
+        this.setState({deleteId:null,showAlert:!this.state.showAlert})
+        if(res){
+          console.log(res)
+        }else{
+          return 'error'
+        }
+      })
+    }else{
+      this.setState({deleteId:null,showAlert:!this.state.showAlert})
+    }
+  }
+  handleAlert(id){
+    this.setState({showAlert:!this.state.showAlert,deleteId:id})
+    
+  }
   handleInfoClick() {
     console.log('handleInfoClick');
   }
@@ -245,13 +283,11 @@ class UserList extends Component {
             iconClassName="material-icons"
             tooltipPosition="top-center"
             tooltip="Delete"
-            onClick={this.handleInfoClick}
+            onClick={()=>this.handleAlert(i.id)}
           >
             delete
           </IconButton>]
         })
-
-        
         this.setState({users:succes.data})
         dataTable.push(succes.data.chunk_inefficient(10))
         this.setState({
@@ -306,7 +342,7 @@ class UserList extends Component {
             </Card>
           </div>
           {this.state.showModal && <ModalFormUser user={this.state.user} showModal={this.handlePersonClick} userData={this.addUser}/>}
-          
+          {this.state.showAlert && <Alert showAlert={this.handleDelete} info={'Desea eliminar al usuario?'}/>}
         </div>
  
     );
