@@ -29,16 +29,16 @@ const Root = (store) => {
 
 
 
-    return (
-      <MuiThemeProvider muiTheme={getMuiTheme()}>
-        <Router>
-            <div>
-                <Route exact path="/login" component={Login} />  
-                <PrivateRoute path="/list" component={App} />
-            </div>
-        </Router>
-      </MuiThemeProvider>
-    );
+  return (
+    <MuiThemeProvider muiTheme={getMuiTheme()}>
+      <Router>
+        <div>
+          <Route exact path="/login" component={Login} />  
+          <PrivateRoute path="/list" component={App} />
+        </div>
+      </Router>
+    </MuiThemeProvider>
+  );
   
 }
   

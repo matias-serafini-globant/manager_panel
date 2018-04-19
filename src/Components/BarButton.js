@@ -15,13 +15,14 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import Auth from '../lib/Auth/Auth';
 
 class barButton extends Component {
-    constructor(props){
-        super(props)
-        this.state={auth:true}
-    }
+	constructor(props){
+		super(props)
+		this.state={auth:true}
+	}
 
   static muiName='IconMenu'
-  removeToken(){
+	
+	removeToken(){
     localStorage.removeItem('token')
     localStorage.removeItem('userId')
     localStorage.removeItem('userMail')
@@ -31,19 +32,19 @@ class barButton extends Component {
   }
   render() {
     return (
-        <div>
-            {!this.state.auth ? <Redirect to= {{pathname:'/login'}}/> : (
-            <IconMenu 
-                iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-                iconStyle={{ color: 'rgba(255, 255, 255)' }}
-            >
-                <MenuItem primaryText="Refresh" />
-                <MenuItem primaryText="Help" />
-                <MenuItem primaryText="Sign out" onClick={this.removeToken.bind(this)} />
-            </IconMenu>)}
-        </div>
+			<div>
+				{!this.state.auth ? <Redirect to= {{pathname:'/login'}}/> : (
+				<IconMenu 
+					iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+					anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+					targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+					iconStyle={{ color: 'rgba(255, 255, 255)' }}
+				>
+				<MenuItem primaryText="Refresh" />
+				<MenuItem primaryText="Help" />
+				<MenuItem primaryText="Sign out" onClick={this.removeToken.bind(this)} />
+				</IconMenu>)}
+			</div>
     );
   }
 }

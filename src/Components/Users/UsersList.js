@@ -82,7 +82,7 @@ const tableStyle = [
   },  
 ];
 
-const dataTable = [];
+var dataTable = [];
 
 Object.defineProperty(Array.prototype, 'chunk_inefficient', {
   value: function(chunkSize) {
@@ -122,6 +122,7 @@ Array.prototype.indexOfForArrays = function(search, flag)
   return objAux;
 };
 
+
 class UserList extends Component {
   constructor(props, context) {
     super(props, context);
@@ -155,6 +156,26 @@ class UserList extends Component {
 
   handleFilterValueChange(value) {
     console.log('filter value: ' + value);
+    let searchData = []
+    if(value !== '')  {
+      dataTable[0].forEach((i,index)=>{
+        i.map((e)=>{
+          
+          if (e.id.toString().indexOf(value) >= 0 || e.name.toLowerCase().indexOf(value.toLowerCase()) >= 0 || e.nickname.toLowerCase().indexOf(value.toLowerCase()) >= 0){
+            searchData.push(e)
+          }
+        })
+      })
+      this.setState({
+        data: searchData,
+        totalUser:searchData.length
+      });
+      //logica
+    }else{
+      this.handleUsers();
+    }
+
+
   }
 
   handleCellClick(rowIndex, columnIndex, row, column) {
@@ -191,39 +212,49 @@ class UserList extends Component {
     
   }
 
-  addUser(data){   
-    data.action = [<IconButton
-      iconClassName="material-icons"
-      tooltipPosition="top-center"
-      tooltip="Edit"
-      key={data.id}
-      onClick={() => this.handlePersonClick(data.id)}
-    >
-      mode_edit
-    </IconButton>,<IconButton
-      iconClassName="material-icons"
-      tooltipPosition="top-center"
-      tooltip="Delete"
-      onClick={()=>this.handleAlert(data.id)}
-    >
-      delete
-    </IconButton>]
-    let pos = dataTable[0].length -1
+  addUser(data,e){   
+    if(e!==true){
+        data.action = [<IconButton
+        iconClassName="material-icons"
+        tooltipPosition="top-center"
+        tooltip="Edit"
+        key={data.id}
+        onClick={() => this.handlePersonClick(data.id)}
+      >
+        mode_edit
+      </IconButton>,<IconButton
+        iconClassName="material-icons"
+        tooltipPosition="top-center"
+        tooltip="Delete"
+        onClick={()=>this.handleAlert(data.id)}
+      >
+        delete
+      </IconButton>]
+      let pos = dataTable[0].length -1
 
-    if (dataTable[0][pos].length < 10){
-      dataTable[0][pos].push(data)
-      this.setState({
-        data: dataTable[0][pos],
-        page: this.state.page,
-        totalUser: this.state.totalUser + 1,
-      });
+      if (dataTable[0][pos].length < 10){
+        dataTable[0][pos].push(data)
+        this.setState({
+          data: dataTable[0][pos],
+          page: this.state.page,
+          totalUser: this.state.totalUser + 1,
+        });
+      }else{
+        dataTable[0].push([data])
+        this.setState({
+          data: dataTable[0][pos + 1],
+          page: this.state.page + 1,
+          totalUser: this.state.totalUser + 1,
+        });
+      }
     }else{
-      dataTable[0].push([data])
-      this.setState({
-        data: dataTable[0][pos + 1],
-        page: this.state.page + 1,
-        totalUser: this.state.totalUser + 1,
-      });
+      dataTable[0].forEach((i,index)=>{
+        i.forEach((e)=>{
+          if (e.id == data){
+            this.handleUsers(index);
+          }
+        })
+      })
     }
   }
 
@@ -240,16 +271,25 @@ class UserList extends Component {
         });
     }else{
       this.setState({user:null,showModal:!this.state.showModal})
-    }
-    
+    } 
   }
+
+
+
   handleDelete(flag){
+    let id = this.state.deleteId;
     if(flag === true){
-      apiService('DELETE','/user/id?id='+this.state.deleteId)
+      apiService('DELETE','/user/id?id='+id)
       .then((res)=>{
         this.setState({deleteId:null,showAlert:!this.state.showAlert})
         if(res){
-          console.log(res)
+          dataTable[0].forEach((i,index)=>{
+            i.forEach((e)=>{
+              if (e.id === id){
+                this.handleUsers(index);
+              }
+            })
+          })
         }else{
           return 'error'
         }
@@ -259,14 +299,13 @@ class UserList extends Component {
     }
   }
   handleAlert(id){
-    this.setState({showAlert:!this.state.showAlert,deleteId:id})
-    
+    this.setState({showAlert:!this.state.showAlert,deleteId:id})    
   }
   handleInfoClick() {
     console.log('handleInfoClick');
   }
 
-  handleUsers(){
+  handleUsers(index){
     apiService('GET','/user/all')
       .then((succes) => {
         succes.data.map(i =>{
@@ -289,12 +328,21 @@ class UserList extends Component {
           </IconButton>]
         })
         this.setState({users:succes.data})
-        dataTable.push(succes.data.chunk_inefficient(10))
-        this.setState({
-          data: dataTable[0][0],
-          page: 1,
-          totalUser:succes.data.length
-        });
+        
+        if(index >= 0){
+          dataTable = []
+          dataTable.push(succes.data.chunk_inefficient(10))
+          this.setState({
+            data: dataTable[0][index],
+            totalUser:succes.data.length
+          });
+        }else{
+          dataTable.push(succes.data.chunk_inefficient(10))
+          this.setState({
+            data: dataTable[0][0],
+            totalUser:succes.data.length
+          });
+        }
 
       })
       .catch(function (reason) {
@@ -323,6 +371,7 @@ class UserList extends Component {
                 data={this.state.data}
                 page={this.state.page}
                 showHeaderToolbar={true}
+                onFilterValueChange={this.handleFilterValueChange}
                 footerToolbarStyle={styles.footerToolbarStyle}
                 tableBodyStyle={styles.tableBodyStyle}
                 tableStyle={styles.tableStyle}

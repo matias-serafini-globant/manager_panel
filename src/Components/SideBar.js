@@ -34,40 +34,37 @@ class SideBar extends Component {
   render() {
     return (
       <div>
-        
-          <div>
-            <AppBar
-              style={{backgroundColor: '#66BB6A',position: "fixed", top: 0,}}
-              
-              onLeftIconButtonClick={this.handleToggle}
-              title="Title"
-              iconElementRight={<BarButton/>}/>
-            <Drawer
-              className={classnames('app-bar', {'expanded': this.state.open})}
-              containerStyle={ {borderRight : '1px solid rgba(179, 179, 179, 0.7)',top: 'auto'}}
-              zDepth='none'
-              docked={true}
-              open={this.state.open}
-              onRequestChange={(open) => this.setState({open})}>
-              <List>
-                <Subheader>User Name</Subheader>
-                <ListItem primaryText="Sent mail" leftIcon={< ContentSend />}/>
-                <ListItem primaryText="Drafts" leftIcon={< ContentDrafts />}/>
-                <ListItem
-                  primaryText="Inbox"
-                  leftIcon={< ContentInbox />}
-                  initiallyOpen={true}
-                  primaryTogglesNestedList={true}
-                  nestedItems={[ < ListItem key = { 1 }
-                  primaryText = "Starred" leftIcon = { < ActionGrade />
+        <div>
+          <AppBar
+            style={{backgroundColor: '#66BB6A',position: "fixed", top: 0,}}
+            
+            onLeftIconButtonClick={this.handleToggle}
+            title="Title"
+            iconElementRight={<BarButton/>}/>
+          <Drawer
+            className={classnames('app-bar', {'expanded': this.state.open})}
+            containerStyle={ {borderRight : '1px solid rgba(179, 179, 179, 0.7)',top: 'auto'}}
+            zDepth='none'
+            docked={true}
+            open={this.state.open}
+            onRequestChange={(open) => this.setState({open})}>
+            <List>
+              <Subheader>User Name</Subheader>
+              <ListItem primaryText="Sent mail" leftIcon={< ContentSend />}/>
+              <ListItem primaryText="Drafts" leftIcon={< ContentDrafts />}/>
+              <ListItem
+                primaryText="Inbox"
+                leftIcon={< ContentInbox />}
+                initiallyOpen={true}
+                primaryTogglesNestedList={true}
+                nestedItems={[ < ListItem key = { 1 }
+                primaryText = "Starred" leftIcon = { < ActionGrade />
                   } />, < ListItem key = { 2 }
                   />
                 ]}/>
-              </List>
-            </Drawer>
-            
-          </div>
-
+            </List>
+          </Drawer>
+        </div>
       </div>
     )
   }
