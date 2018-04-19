@@ -34,5 +34,5 @@ module.exports = {
 
 	//"insertUserPlugin":"INSERT INTO user_plugin (user_id, plugin_id) VALUES ?",
 
-	"deleteUser":"DELETE FROM user WHERE id = ?"
+	"deleteUser":"DELETE FROM user WHERE id = :id"
 };
