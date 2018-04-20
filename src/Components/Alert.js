@@ -16,13 +16,11 @@ class DialogAlert extends Component {
   }
   
 	handleSend = () => {
-
 		this.props.showAlert(this.state.open)
 	}
 
 
 	handleClose = () => {
-
 		this.props.showAlert(this.state.acept)
 	}
 

@@ -55,7 +55,7 @@ class SideBar extends Component {
               <ListItem
                 primaryText="Inbox"
                 leftIcon={< ContentInbox />}
-                initiallyOpen={true}
+                initiallyOpen={false}
                 primaryTogglesNestedList={true}
                 nestedItems={[ < ListItem key = { 1 }
                 primaryText = "Starred" leftIcon = { < ActionGrade />

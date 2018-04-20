@@ -22,7 +22,6 @@ const styles = {
   
   container: {
     textAlign: 'center',
-
   },
   component: {
     margin: '60px 20px',
@@ -155,12 +154,10 @@ class UserList extends Component {
   }
 
   handleFilterValueChange(value) {
-    console.log('filter value: ' + value);
     let searchData = []
     if(value !== '')  {
       dataTable[0].forEach((i,index)=>{
         i.map((e)=>{
-          
           if (e.id.toString().indexOf(value) >= 0 || e.name.toLowerCase().indexOf(value.toLowerCase()) >= 0 || e.nickname.toLowerCase().indexOf(value.toLowerCase()) >= 0){
             searchData.push(e)
           }
@@ -170,7 +167,6 @@ class UserList extends Component {
         data: searchData,
         totalUser:searchData.length
       });
-      //logica
     }else{
       this.handleUsers();
     }

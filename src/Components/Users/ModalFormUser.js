@@ -10,11 +10,22 @@ import {red500, yellow500, blue500} from 'material-ui/styles/colors';
 import Snackbar from 'material-ui/Snackbar';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import FileBase64 from 'react-file-base64';
 
 import apiService from '../../lib/apiService/apiService';
 
 const iconStyles = {
 	marginRight: 50
+};
+const styles = {
+  button: {
+		height: '40px',
+		lineHeight: '55px',
+		overflow: 'inherit'
+  },
+  iconStyles: {
+		marginRight: 50
+  },
 };
 
 const textStyles = {
@@ -32,8 +43,7 @@ const textStylesSelect = {
 class ModalFormUser extends Component {
 
 	constructor(props) {
-		super(props);
-				
+		super(props);		
 		this.state = {
 			open: true,
 			edit:false,
@@ -104,7 +114,9 @@ class ModalFormUser extends Component {
 		}
 	}
 
-	handleSelect = (event, index, select) => this.setState({select});
+	handleSelect = (event, index, select) => {
+		this.setState({select})
+	};
 
 	render() {
 		console.log(this.state)
@@ -144,7 +156,15 @@ class ModalFormUser extends Component {
 							<MenuItem value={6} primaryText="Client"/>
 						</SelectField>
 					</FontIcon>
-
+					<FontIcon className="material-icons" style={styles.iconStyles}>filter
+						<FlatButton
+							label="Choose an Image"
+							labelPosition="before"
+							style={styles.button}
+							containerElement="label"
+						>
+						</FlatButton>
+					</FontIcon>
 					<div
 						style={{
 						textAlign: 'right',
