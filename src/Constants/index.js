@@ -1,0 +1,11 @@
+export const AUTHENTICATED = "AUTHENTICATED";
+export const USERS = "USERS";
+export const GET_USER = "GET_USER";
+export const DELETE_USER = "DELETE_USER";
+export const RESET_STORE = "RESET_STORE";
+export const RESPONSIVE = "RESPONSIVE";
+export const NO_RESPONSIVE = "NO_RESPONSIVE";
+export const SHOW_ALERT = "SHOW_ALERT";
+export const SHOW_MODAL = "SHOW_MODAL";
+export const CLOSE_MODAL = "CLOSE_MODAL";
+export const CLOSE_ALERT = "CLOSE_ALERT";

@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {List, ListItem} from 'material-ui/List'
+import React, { Component } from 'react';
+import { List, ListItem } from 'material-ui/List'
 import ActionGrade from 'material-ui/svg-icons/action/grade'
 import ContentInbox from 'material-ui/svg-icons/content/inbox'
 import ContentDrafts from 'material-ui/svg-icons/content/drafts'
@@ -16,52 +16,35 @@ import BarButton from './BarButton';
 class SideBar extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      open: true
-    }
-    this.handleToggle = this.handleToggle.bind(this)
 
   }
-
-  handleToggle() {
-    this.setState({
-      open: !this.state.open
-    })
-    this.props.handleTogg(this.state.open)
-  }
-
 
   render() {
     return (
-      <div>
+      <div className="sidebar-app-container">
         <div>
-          <AppBar
-            style={{backgroundColor: '#66BB6A',position: "fixed", top: 0,}}
-            
-            onLeftIconButtonClick={this.handleToggle}
-            title="Title"
-            iconElementRight={<BarButton/>}/>
+
           <Drawer
-            className={classnames('app-bar', {'expanded': this.state.open})}
-            containerStyle={ {borderRight : '1px solid rgba(179, 179, 179, 0.7)',top: 'auto'}}
+            className={classnames('app-bar', { 'expanded': this.props.open })}
+            containerStyle={{ borderRight: '1px solid rgba(179, 179, 179, 0.7)', top: 'auto' }}
             zDepth='none'
             docked={true}
-            open={this.state.open}
-            onRequestChange={(open) => this.setState({open})}>
-            <List>
+            open={this.props.open}
+          >
+            <List className="app-bar-list">
               <Subheader>User Name</Subheader>
-              <ListItem primaryText="Sent mail" leftIcon={< ContentSend />}/>
-              <ListItem primaryText="Drafts" leftIcon={< ContentDrafts />}/>
+              <ListItem primaryText="Sent mail" leftIcon={< ContentSend />} />
+              <ListItem primaryText="Drafts" leftIcon={< ContentDrafts />} />
               <ListItem
                 primaryText="Inbox"
                 leftIcon={< ContentInbox />}
                 initiallyOpen={false}
                 primaryTogglesNestedList={true}
-                nestedItems={[ < ListItem key = { 1 }
-                primaryText = "Starred" leftIcon = { < ActionGrade />
-                  } />, < ListItem key = { 2 }
-                  />
-                ]}/>
+                nestedItems={[< ListItem key={1}
+                  primaryText="Starred" leftIcon={< ActionGrade />
+                  } />, < ListItem key={2}
+                />
+                ]} />
             </List>
           </Drawer>
         </div>
