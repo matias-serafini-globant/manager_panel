@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="button" value="CLICK" id="button">
+</body>
+<script>
+    let cancer = ["soda", "calco", 3, 4, 5, 6, "permiso", 8, 9, 10, 11, 12, 13, 14]
+
+    const pageHelper = (data, number) => {
+        let page = 0
+        let dataPage = []
+        if (page === 0) {
+            for (let i = 0; i < Math.ceil(data.length / number); i++) {
+                page++
+            }
+        }
+        for (let i = 0; i < page; i++) {
+            dataPage[i] = [];
+            data.forEach((element, id) => {
+                if (id < number) {
+                    dataPage[i].push(element);
+                }
+                else if (id === number) {
+                    data.splice(0, number)
+                    return
+                }
+            })
+        }
+        console.log(dataPage)
+        return dataPage
+    }
+    document.getElementById("button").addEventListener("click", () => { pageHelper(cancer, 5) }) </script>
+
+</html>
