@@ -1,21 +1,13 @@
 import React, { Component } from 'react';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux'
 import './App.css';
-import Reducers from './Reducers/reducers'
-import LoginReducer from './Reducers/LoginReducer'
 import { connect } from 'react-redux'
-
 import AppBar from 'material-ui/AppBar';
-import classnames from 'classnames'
-
-
-
+import classnames from 'classnames';
+import { userGet } from './Actions/LoginAction'
 import BarButton from './Components/BarButton';
 import SideBar from './Components/SideBar';
-
 import UsersList from './Components/Users/UsersList'
-import UserComponent from './Components/Users/UserComponent'
+
 
 class App extends Component {
   constructor(props) {
@@ -40,11 +32,13 @@ class App extends Component {
 
   }
   componentDidMount() {
+
     if (window.innerWidth < 768) {
       this.setState({
         open: false
       })
     }
+
   }
 
   render() {
@@ -52,7 +46,7 @@ class App extends Component {
     return (
 
       <div className="app-container">
-        {console.log(this.props.responsive, "probando responsive!")}
+        {console.log(this.props.helperReducer.responsive, "probando responsive!")}
         <AppBar
           style={{ backgroundColor: '#66BB6A', position: "fixed", top: 0, }}
 
@@ -73,9 +67,9 @@ class App extends Component {
 }
 const mapStateToProps = state => {
   return {
-    responsive: state.responsive
+    helperReducer: state.helperReducer,
   }
 }
-export default connect(mapStateToProps)(App)
+export default connect(mapStateToProps, { userGet })(App)
 
 

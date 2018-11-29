@@ -39,7 +39,8 @@ class Login extends Component {
 		super(props)
 		this.state = {
 			username: "",
-			password: ""
+			password: "",
+			authenticated: false
 		}
 	}
 
@@ -59,9 +60,7 @@ class Login extends Component {
 	};
 
 	render() {
-		const token = this.props.token;
-		console.log(token, "ACA ESTA EL TOKEN")
-		if (this.props.authenticated === false) {
+		if (this.props.LoginReducer.authenticated === false) {
 			return (
 				<form className="form-container" onSubmit={this.handleSubmit} /*onSubmit={this.login}*/>
 					<Card
@@ -176,8 +175,6 @@ class Login extends Component {
 const mapStateToProps = state => {
 	return {
 		LoginReducer: state.LoginReducer,
-		authenticated: state.authenticated,
-		token: state.token
 	}
 }
 export default connect(mapStateToProps, { loginGet })(Login)

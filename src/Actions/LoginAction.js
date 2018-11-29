@@ -1,4 +1,4 @@
-import { AUTHENTICATED, USERS, GET_USER, DELETE_USER, RESET_STORE } from '../Constants';
+import { AUTHENTICATED, USERS, GET_USER, DELETE_USER, RESET_STORE, ADD_USER, EDIT_USER } from '../Constants';
 import apiService from '../lib/apiService/apiService'
 
 export const userAuth = token => {
@@ -30,6 +30,18 @@ export const resetStore = () => {
         type: RESET_STORE
     }
 }
+export const userAdd = (data) => {
+    return {
+        type: ADD_USER,
+        data
+    }
+}
+export const userEdit = data => {
+    return {
+        type: EDIT_USER,
+        data
+    }
+}
 export const deleteUserForId = id => {
     return dispatch => {
         apiService('DELETE', '/user/id?id=' + id)
@@ -42,14 +54,42 @@ export const deleteUserForId = id => {
             })
     }
 }
+export const addUser = userData => {
+    return dispatch => {
+        apiService('POST', '/user', userData)
+            .then((res) => {
+                if (res.data) {
+                    res.data.id = res.data.userId
+                    dispatch(userAdd(res))
+                    console.log(res, "DESDE EL ADD USER")
+                }
 
+            })
+            .catch(function (reason) {
+                console.error(reason);
+            });
+    }
+}
+export const editUser = (id, user) => {
+    return dispatch => {
+        apiService('PUT', '/user/id?id=' + id, user)
+            .then((res) => {
+                if (res.data) {
+                    res.data.id = res.data.userId
+                    dispatch(userEdit(res))
+                }
+            })
+            .catch(function (reason) {
+                console.error(reason);
+            });
+    }
+}
 export const getUserForId = id => {
     return dispatch => {
         if (Number.isInteger(id)) {
             apiService('GET', '/user/id?id=' + id).
                 then((res) => {
                     dispatch(getUser(res))
-                    console.log(res, "DESDE GET USER FOR ID")
                 })
                 .catch(() => {
                     console.log("Error 404")
@@ -62,7 +102,7 @@ export const userGet = () => {
         apiService('GET', '/user/all').
             then((res) => {
                 dispatch(userList(res))
-                console.log(res, "DESDE USERGET")
+
             })
             .catch(() => {
                 console.log("Error 404")
@@ -76,7 +116,7 @@ export const loginGet = data => {
                 if (res.status === 400 || res.status === 401 || res.status === 500) {
                     console.log('Error: ', res.message)
                 } else {
-                    console.log(res, "DESDE LOGIN GET")
+
                     localStorage.setItem('token', res.data.token)
                     localStorage.setItem('userId', res.data.userId)
                     localStorage.setItem('userMail', res.data.email)
