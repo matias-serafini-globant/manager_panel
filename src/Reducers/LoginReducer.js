@@ -1,5 +1,5 @@
 import Auth from '../lib/Auth/Auth';
-import { AUTHENTICATED, USERS, GET_USER, DELETE_USER, RESET_STORE } from '../Constants';
+import { AUTHENTICATED, USERS, GET_USER, DELETE_USER, RESET_STORE, ADD_USER, EDIT_USER } from '../Constants';
 
 const initialState = {
     allUsers: [],
@@ -25,6 +25,7 @@ const LoginReducer = (state = initialState, action) => {
             }
 
         case USERS:
+
             return {
                 ...state,
                 allUsers: action.data,
@@ -35,9 +36,25 @@ const LoginReducer = (state = initialState, action) => {
                 user: action.data
             }
         case DELETE_USER:
+            state.allUsers.data.map((element, index) => {
+                if (element.id === action.id) {
+                    return {
+                        ...state,
+                        allUsers: state.allUsers.data.splice(index, 1)
+                    }
+                }
+            })
+        case EDIT_USER:
             return {
-                ...state
+                ...state,
+                user: action.data
             }
+        case ADD_USER: {
+            return {
+                ...state,
+                allUsers: state.allUsers.data.push(action.data)
+            }
+        }
         case RESET_STORE:
             return {
                 ...state,

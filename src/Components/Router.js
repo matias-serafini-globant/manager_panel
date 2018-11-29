@@ -15,9 +15,10 @@ import Login from './Login/Login';
 import Auth from '../lib/Auth/Auth';
 
 import { Provider } from 'react-redux'
-
+import { createStore, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk'
 import configureStore from '../store/configureStore'
-
+import reducers from '../Reducers/reducers'
 
 const Root = (stores) => {
   const PrivateRoute = ({ component: Component, ...rest }) => (
@@ -32,7 +33,7 @@ const Root = (stores) => {
     )} />
   )
 
-  const store = configureStore();
+  const store = createStore(reducers, applyMiddleware(thunk));
   return (
     <Provider store={store}>
       <MuiThemeProvider muiTheme={getMuiTheme()}>

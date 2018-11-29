@@ -1,25 +1,18 @@
 import React, { Component } from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
-import Dialog from 'material-ui/Dialog';
 import { deepOrange500, blue500, red500, greenA200 } from 'material-ui/styles/colors';
-import FlatButton from 'material-ui/FlatButton';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import MenuItem from 'material-ui/MenuItem';
 import { Card, CardHeader } from 'material-ui/Card';
 import IconButton from 'material-ui/IconButton';
 import PersonAdd from 'material-ui/svg-icons/social/person-add';
 import InfoOutline from 'material-ui/svg-icons/action/info-outline';
 import DataTables from 'material-ui-datatables';
-import FontIcon from 'material-ui/FontIcon';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom'
-import apiService from '../../lib/apiService/apiService';
-
 import ModalFormUser from './ModalFormUser'
 import Alert from '../Alert.js'
-
 import { connect } from 'react-redux'
 import { userGet, getUserForId, deleteUserForId, resetStore } from '../../Actions/LoginAction'
+import { showModal, showAlert, closeAlert } from "../../Actions/helperAction"
+
 const styles = {
 
   container: {
@@ -52,11 +45,6 @@ const styles = {
   },
 };
 
-const muiTheme = getMuiTheme({
-  palette: {
-    accent1Color: deepOrange500,
-  },
-});
 
 
 const tableStyle = [
@@ -127,7 +115,6 @@ Array.prototype.indexOfForArrays = function (search, flag) {
   return objAux;
 };
 
-
 class UserList extends Component {
   constructor(props, context) {
     super(props, context);
@@ -138,23 +125,21 @@ class UserList extends Component {
     this.handleRowSelection = this.handleRowSelection.bind(this);
     this.handlePreviousPageClick = this.handlePreviousPageClick.bind(this);
     this.handleNextPageClick = this.handleNextPageClick.bind(this);
-    this.handlePersonClick = this.handlePersonClick.bind(this);
+
     this.handleInfoClick = this.handleInfoClick.bind(this);
     this.addUser = this.addUser.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-    // this.handleUsers = this.handleUsers.bind(this);
+    this.handleUsers = this.handleUsers.bind(this);
+    this.handleadduser = this.handleadduser.bind(this)
 
     this.state = {
       data: dataTable,
       page: 1,
-      showModal: false,
-      showAlert: false,
       totalUser: 0,
       deleteId: null,
       user: null
     };
   }
-
 
   handleSortOrderChange(key, order) {
     console.log('key:' + key + ' order: ' + order);
@@ -177,8 +162,6 @@ class UserList extends Component {
     } else {
       this.handleUsers();
     }
-
-
   }
 
   handleCellClick(rowIndex, columnIndex, row, column) {
@@ -215,6 +198,58 @@ class UserList extends Component {
 
   }
 
+  componentDidMount() {
+    this.props.userGet();
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.LoginReducer.allUsers.data !== this.props.LoginReducer.allUsers.data) {
+      this.handleUsers();
+      console.log(this.props.LoginReducer.allUsers, "ALLUSERS DESDE UPDATE")
+    } else if (prevProps.LoginReducer.user !== this.props.LoginReducer.user) {
+      this.props.showModal();
+      this.setState({ user: this.props.LoginReducer.user.data[0] })
+    }
+  }
+  handleUsers(index) {
+    const array = this.props.LoginReducer.allUsers.data;
+    if (array) {
+      array.map(i => {
+        i.action = [<IconButton
+          iconClassName="material-icons"
+          tooltipPosition="top-center"
+          tooltip="Edit"
+          key={i.id}
+          onClick={() => {
+            this.props.getUserForId(i.id);
+          }}
+        >
+          mode_edit
+                </IconButton>, <IconButton
+          iconClassName="material-icons"
+          tooltipPosition="top-center"
+          tooltip="Delete"
+          onClick={() => this.handleAlert(i.id)}
+        >
+          delete
+                </IconButton>]
+      })
+      if (index >= 0) {
+        dataTable = []
+        dataTable.push(array.chunk_inefficient(10))
+        this.setState({
+          data: dataTable[0][index],
+          totalUser: array.length
+        });
+      } else {
+        dataTable.push(array.chunk_inefficient(10))
+        this.setState({
+          data: dataTable[0][0],
+          totalUser: array.length
+        });
+      }
+
+    }
+  }
 
   addUser(data, e) {
     if (e !== true) {
@@ -223,7 +258,9 @@ class UserList extends Component {
         tooltipPosition="top-center"
         tooltip="Edit"
         key={data.id}
-        onClick={() => this.handlePersonClick(data.id)}
+        onClick={() => {
+          this.props.getUserForId(data.id)
+        }}
       >
         mode_edit
       </IconButton>, <IconButton
@@ -262,105 +299,25 @@ class UserList extends Component {
     }
   }
 
-
-  handlePersonClick(id) {
-    this.props.getUserForId(id);
-    if (this.props.user !== null) {
-      this.setState({ user: this.props.user.data[0], showModal: !this.state.showModal })
-    } else {
-      this.setState({ user: null, showModal: !this.state.showModal })
-    }
-    console.log(this.props.user, "DESDE HANDLE PERSON")/* 
-    if (Number.isInteger(id)) {
-      apiService('GET', '/user/id?id=' + id)
-        .then((res) => {
-          if (res.data) {
-            this.setState({ user: res.data[0], showModal: !this.state.showModal })
-          }
-        })
-        .catch(function (reason) {
-          console.error(reason);
-        });
-    } else {
-      this.setState({ user: null, showModal: !this.state.showModal })
-    }*/
-  }
-
-
   handleDelete(flag) {
     let id = this.state.deleteId;
     if (flag === true) {
-      this.props.deleteUserForId(id)
-      this.setState({ deleteId: null, showAlert: !this.state.showAlert })
-
-      /*apiService('DELETE', '/user/id?id=' + id)
-        .then((res) => {
-          this.setState({ deleteId: null, showAlert: !this.state.showAlert })
-          if (res) {
-            dataTable[0].forEach((i, index) => {
-              i.forEach((e) => {
-                if (e.id === id) {
-                  this.handleUsers(index);
-                }
-              })
-            })
-          } else {
-            return 'error'
-          }
-        })*/
+      this.props.deleteUserForId(id);
+      this.props.closeAlert();
+      this.props.userGet();
     } else {
-      this.setState({ deleteId: null, showAlert: !this.state.showAlert })
+      this.props.closeAlert();
+      this.setState({ deleteId: null })
     }
   }
+
   handleAlert(id) {
-    this.setState({ showAlert: !this.state.showAlert, deleteId: id })
+    this.props.showAlert();
+    this.setState({ deleteId: id })
   }
   handleInfoClick() {
     console.log('handleInfoClick');
   }
-
-
-  handleUsers = index => {
-    const { allUsers } = this.props;
-    console.log(1)
-    if (allUsers.length !== 0) {
-      allUsers.data.map(i => {
-        i.action = [<IconButton
-          iconClassName="material-icons"
-          tooltipPosition="top-center"
-          tooltip="Edit"
-          key={i.id}
-          onClick={() => this.handlePersonClick(i.id)}
-        >
-          mode_edit
-                </IconButton>, <IconButton
-          iconClassName="material-icons"
-          tooltipPosition="top-center"
-          tooltip="Delete"
-          onClick={() => this.handleAlert(i.id)}
-        >
-          delete
-                </IconButton>]
-      })
-      this.setState({ users: allUsers.data })
-    }
-
-    if (index >= 0) {
-      dataTable = []
-      dataTable.push(allUsers.data.chunk_inefficient(10))
-      this.setState({
-        data: dataTable[0][index],
-        totalUser: allUsers.data.length
-      });
-    } else {
-      dataTable.push(allUsers.data.chunk_inefficient(10))
-      this.setState({
-        data: dataTable[0][0],
-        totalUser: allUsers.data.length
-      });
-    }
-  }
-
   footerToolbarStyle() {
     if (window.innerWidth > 500) {
       return styles.footerToolbarStyle
@@ -368,14 +325,15 @@ class UserList extends Component {
       return styles.footerToolbarStyleResponsive
     }
   }
-
-
+  handleadduser(data) {
+    if (data !== null) {
+      return data
+    } else {
+      return {}
+    }
+  }
   render() {
-
-
-
-
-
+    console.log(this.state.user, "DESDE EL RENDER EL USER DEL STATE")
     return (
 
       <div style={styles.container}>
@@ -403,7 +361,7 @@ class UserList extends Component {
               tableWrapperStyle={styles.tableWrapperStyle}
               count={this.state.totalUser}
               toolbarIconRight={[
-                <IconButton onClick={() => this.handlePersonClick()} >
+                <IconButton onClick={() => this.props.showModal()} >
                   <PersonAdd />
                 </IconButton>,
                 <IconButton onClick={this.handleInfoClick} >
@@ -414,29 +372,24 @@ class UserList extends Component {
           </Card>
         </div>
 
-        {this.state.showModal && <ModalFormUser user={this.state.user} showModal={this.handlePersonClick} userData={this.addUser} />}
-        {this.state.showAlert && <Alert showAlert={this.handleDelete} info={'Desea eliminar al usuario?'} />}
+        {this.props.helperReducer.showModal && <ModalFormUser user={this.state.user} showModal={this.props.helperReducer.showModal} userData={this.addUser} />}
+        {this.props.helperReducer.showAlert && <Alert showAlert={this.handleDelete} info={'Desea eliminar al usuario?'} />}
       </div>
-
-
     ) /*else {
       return (<Redirect to={{
         pathname: '/login'
       }} />
       )
     }*/
-
-
   }
 
 }
 
 const mapToStateToProps = state => {
   return {
-    allUsers: state.allUsers,
-    authenticated: state.authenticated,
-    user: state.user
+    LoginReducer: state.LoginReducer,
+    helperReducer: state.helperReducer
   }
 }
 
-export default connect(mapToStateToProps, { userGet, getUserForId, deleteUserForId, resetStore })(UserList);
+export default connect(mapToStateToProps, { userGet, getUserForId, deleteUserForId, resetStore, showModal, showAlert, closeAlert })(UserList);
