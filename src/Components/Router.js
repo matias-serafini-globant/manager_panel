@@ -14,6 +14,9 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import Login from './Login/Login';
 import Auth from '../lib/Auth/Auth';
 
+//App Component
+import Home from './Home/Home';
+
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
@@ -40,6 +43,7 @@ const Root = (stores) => {
         <Router>
           <div>
             <Route exact path="/login" component={Login} />
+            <Route exact path="/home" component={Home} />
             <PrivateRoute path="/list" component={App} />
           </div>
         </Router>
