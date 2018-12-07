@@ -6,7 +6,13 @@ import classnames from 'classnames';
 import { userGet } from './Actions/LoginAction'
 import BarButton from './Components/BarButton';
 import SideBar from './Components/SideBar';
-import UsersList from './Components/Users/UsersList'
+import UsersList from './Components/Users/UsersList';
+//Font Awesome
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faStroopwafel } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faStroopwafel)
 
 
 class App extends Component {
